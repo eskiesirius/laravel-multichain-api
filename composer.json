@@ -1,0 +1,35 @@
+{
+    "name": "eskie/laravel-multichain-api",
+    "description": "Multichain API for Laravel",
+    "keywords": ["laravel", "multichain", "blockchain", "api"],
+    "authors": [
+        {
+            "name": "Eskie Sirius Maquilang",
+            "email": "eskiesiriusmaquilang@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=5.4.0",
+        "illuminate/support": "^5.3",
+        "fguillot/json-rpc": "~v1.2.3"
+    },
+    "require-dev": {
+		"phpunit/phpunit": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eskie\\Multichain\\": "src/Eskie/Multichain/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers":[
+                "Eskie\\Multichain\\MultiChainServiceProvider"
+            ],
+            "aliases":{
+                "Multichain":"Eskie\\Multichain\\Facades\\MultiChain"
+            }
+        }
+    }
+}
