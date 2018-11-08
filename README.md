@@ -23,6 +23,7 @@ Laravel has auto import providers and aliases settings so you don't need to add 
 But if there is an error please double check your `app.php`.
 
 Manual Import of providers and aliases:
+
 Add service provider class to `providers` section of `app.php` located in `config` directory 
 ``` 
 'providers' => [
