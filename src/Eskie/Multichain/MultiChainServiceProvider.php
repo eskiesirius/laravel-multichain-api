@@ -2,7 +2,6 @@
 
 namespace Eskie\Multichain;
 
-use MultichainClient;
 use Illuminate\Support\ServiceProvider;
 
 class MultiChainServiceProvider extends ServiceProvider
