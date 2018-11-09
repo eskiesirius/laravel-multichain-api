@@ -1089,4 +1089,66 @@ class MultichainClient
         $params = $this->evaluateNullField(array($streamName, $address, $verbose),$count);
         return $this->jsonRPCClient->execute("liststreampublishers", $params);
     }
+
+    /**
+     * This encrypts the node’s wallet for the first time, using passphrase as the password for unlocking. 
+     * Once encryption is complete, the wallet’s private keys can no longer be retrieved directly from the 
+     * wallet.dat file on disk, and MultiChain will stop and need to be restarted. 
+     * Use with caution – once a wallet has been encrypted it cannot be permanently unencrypted, 
+     * and must be unlocked for signing transactions with the walletpassphrase command. In a 
+     * permissioned blockchain, MultiChain will also require the wallet to be unlocked 
+     * before it can connect to other nodes, or sign blocks that it has created.
+     * @param  $passphrase 
+     * @return mixed           
+     */
+    public function encryptWallet($passphrase)
+    {
+        return $this->jsonRPCClient->execute("encryptwallet", array($passphrase));
+    }
+
+    /**
+     * Returns information about the node’s wallet, including the number of transactions (txcount) and 
+     * unspent transaction outputs (utxocount), the pool of pregenerated keys. 
+     * If the wallet has been encrypted and unlocked, it also shows when it is unlocked_until.
+     * @return mixed
+     */
+    public function getWalletInfo()
+    {
+        return $this->jsonRPCClient->execute("getwalletinfo");
+    }
+
+    /**
+     * This immediately relocks the node’s wallet, independent of the timeout provided by a 
+     * previous call to walletpassphrase.
+     * @return mixed
+     */
+    public function walletLock()
+    {
+        return $this->jsonRPCClient->execute("walletlock");
+    }
+
+    /**
+     * This uses passphrase (as set in earlier calls to encryptwallet or walletpassphrasechange) 
+     * to unlock the node’s wallet for signing transactions for the next timeout seconds. 
+     * In a permissioned blockchain, this will also need to be called before the node can connect to 
+     * other nodes or sign blocks that it has created.
+     * @param  $passphrase 
+     * @param  integer $timeout    in seconds
+     * @return mixed             
+     */
+    public function walletPassphrase($passphrase, $timeout)
+    {
+        return $this->jsonRPCClient->execute("walletpassphrase", array($passphrase,$timeout));
+    }
+
+    /**
+     * This changes the wallet’s password from old-passphrase to new-passphrase.
+     * @param  $oldPassphrase
+     * @param  $newPassphrase
+     * @return mixed              
+     */
+    public function walletPassphraseChange($oldPassphrase, $newPassphrase)
+    {
+        return $this->jsonRPCClient->execute("walletpassphrasechange", array($oldPassphrase,$newPassphrase));
+    }
 }
