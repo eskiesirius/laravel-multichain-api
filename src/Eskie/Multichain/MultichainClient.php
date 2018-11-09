@@ -922,6 +922,21 @@ class MultichainClient
     }
 
     /**
+     * This works like create, but with control over the from-address used to create the stream. 
+     * It is useful if the node has multiple addresses with create permissions.
+     * @param  $fromAddress 
+     * @param  $streamName  
+     * @param  boolean $allowAnyone 
+     * @param  $custom      
+     * @return mixed           
+     */
+    public function createFrom($fromAddress, $streamName, $allowAnyone = false, $custom = null)
+    {
+        $params = $this->evaluateNullField(array($fromAddress,"stream",$streamName, $allowAnyone),$custom);
+        return $this->jsonRPCClient->execute("createfrom", $params);
+    }
+
+    /**
      * Returns information about streams created on the blockchain. Pass a stream name, ref or 
      * creation txid in streams to retrieve information about one stream only, an array thereof for multiple streams, 
      * or * for all streams.
@@ -947,6 +962,20 @@ class MultichainClient
     public function publish($streamName,$key,$hexData)
     {
         return $this->jsonRPCClient->execute("publish", array($streamName, $key, $hexData));
+    }
+
+    /**
+     * This works like publish, but publishes the item from from-address. 
+     * It is useful if a stream is open or the node has multiple addresses with per-stream write permissions.
+     * @param  $fromAddress 
+     * @param  $streamName  
+     * @param  $key         
+     * @param  $hexData     
+     * @return mixed      
+     */
+    public function publishFrom($fromAddress, $streamName, $key,$hexData)
+    {
+        return $this->jsonRPCClient->execute("publishfrom", array($fromAddress,$streamName, $key, $hexData));
     }
 
     /**
@@ -1029,5 +1058,35 @@ class MultichainClient
     public function listStreamItems($streamName, $verbose = false, $count = 10)
     {
         return $this->jsonRPCClient->execute("liststreamitems", array($streamName,$verbose,$count));
+    }
+
+    /**
+     * This works like liststreamitems, but listing items published by the given address only.
+     * @param  $streamName 
+     * @param  $address    
+     * @param  boolean $verbose    
+     * @param  integer $count      
+     * @return mixed            
+     */
+    public function listStreamPublisherItems($streamName, $address, $verbose = false, $count = 10)
+    {
+        return $this->jsonRPCClient->execute("liststreampublisheritems", array($streamName,$address,$verbose,$count));
+    }
+
+    /**
+     * Provides information about publishers who have written to stream, passed as a stream name, 
+     * ref or creation txid. Pass a single address in addresses to retrieve information about one publisher only, 
+     * pass an array or comma-delimited list for multiple publishers, or * for all publishers. 
+     * Set verbose to true to include information about the first and last item by each publisher shown.
+     * @param  $streamName 
+     * @param  string  $address    
+     * @param  boolean $verbose    
+     * @param  $count      
+     * @return mixed            
+     */
+    public function listStreamPublishers($streamName, $address = "*", $verbose = false, $count = null)
+    {
+        $params = $this->evaluateNullField(array($streamName, $address, $verbose),$count);
+        return $this->jsonRPCClient->execute("liststreampublishers", $params);
     }
 }
