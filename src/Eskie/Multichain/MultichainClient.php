@@ -890,4 +890,140 @@ class MultichainClient
     {
         return $this->jsonRPCClient->execute("sendrawtransaction", array($hex, $allowHighFees));
     }
+
+    /**
+     * Evaluate Field if it has value then add it to the array
+     * @param  array $arrayParameters 
+     * @param  $nullField       
+     * @return mixed                 
+     */
+    private function evaluateNullField($arrayParameters, $nullField)
+    {
+        if (!is_null($nullField)) {
+           $arrayParameters[] = $nullField;
+        }
+
+        return $arrayParameters;
+    }
+
+    /**
+     * Creates a new stream on the blockchain called name. Pass the value "stream" in the type parameter 
+     * (the create API can also be used to create upgrades). If open is true then anyone with global send 
+     * permissions can publish to the stream, otherwise publishers must be explicitly granted per-stream 
+     * write permissions. Returns the txid of the transaction creating the stream.
+     * @param  $streamName  
+     * @param  boolean $allowAnyone
+     * @return mixed               
+     */
+    public function create($streamName, $allowAnyone = false, $custom = null)
+    {
+        $params = $this->evaluateNullField(array("stream",$streamName, $allowAnyone),$custom);
+        return $this->jsonRPCClient->execute("create", $params);
+    }
+
+    /**
+     * Returns information about streams created on the blockchain. Pass a stream name, ref or 
+     * creation txid in streams to retrieve information about one stream only, an array thereof for multiple streams, 
+     * or * for all streams.
+     * @param  string  $streamName 
+     * @param  boolean $verbose    
+     * @param  int  $count      
+     * @return mixed              
+     */
+    public function liststreams($streamName = "*", $verbose = false, $count = null)
+    {
+        $params = $this->evaluateNullField(array($streamName, $verbose),$count);
+        return $this->jsonRPCClient->execute("liststreams", $params);
+    }
+
+    /**
+     * Publishes an item in stream, passed as a stream name, ref or creation txid, 
+     * with key provided in text form and data-hex in hexadecimal.
+     * @param  $streamName 
+     * @param  $key        
+     * @param  $hexData    
+     * @return mixed            
+     */
+    public function publish($streamName,$key,$hexData)
+    {
+        return $this->jsonRPCClient->execute("publish", array($streamName, $key, $hexData));
+    }
+
+    /**
+     * Instructs the node to start tracking one or more asset(s) or stream(s). These are specified using a name, 
+     * ref or creation/issuance txid, or for multiple items, an array thereof. If rescan is true, 
+     * the node will reindex all items from when the assets and/or streams were created, as well as those 
+     * in other subscribed entities. Returns null if successful. See also the autosubscribe runtime parameter.
+     * @param  $streamName 
+     * @param  boolean $rescan     
+     * @return mixed          
+     */
+    public function subscribe($streamName, $rescan = true)
+    {
+        return $this->jsonRPCClient->execute("subscribe", array($streamName, $rescan));
+    }
+
+    /**
+     * Instructs the node to stop tracking one or more asset(s) or stream(s). Assets or streams are 
+     * specified using a name, ref or creation/issuance txid, or for multiple items, an array thereof.
+     * @param  $streamName 
+     * @return mixed           
+     */
+    public function unsubscribe($streamName)
+    {
+        return $this->jsonRPCClient->execute("subscribe", array($streamName));
+    }
+
+    /**
+     * Retrieves a specific item with txid from stream, passed as a stream name, ref or creation txid, 
+     * to which the node must be subscribed. Set verbose to true for additional information about 
+     * the item’s transaction. If an item’s data is larger than the maxshowndata runtime parameter, 
+     * it will be returned as an object whose fields can be used with gettxoutdata.
+     * @param  $txId    
+     * @param  boolean $verbose 
+     * @return mixed        
+     */
+    public function getStreamItem($txId, $verbose = false)
+    {
+        return $this->jsonRPCClient->execute("getstreamitem", array("stream",$txId,$verbose));
+    }
+
+    /**
+     * This works like liststreamitems, but listing items with the given key only.
+     * @param  $key     
+     * @param  boolean $verbose 
+     * @param  integer $count   
+     * @return mixed        
+     */
+    public function listStreamKeyItems($key,$verbose = false,$count = 10)
+    {
+        return $this->jsonRPCClient->execute("liststreamkeyitems", array("stream",$key,$verbose,$count));
+    }
+
+    /**
+     * Provides information about keys in stream, passed as a stream name, ref or creation txid. 
+     * Pass a single key in keys to retrieve information about one key only, pass an array for multiple keys, 
+     * or * for all keys. Set verbose to true to include information about the first and last item with each key shown.
+     * @param  string  $keys    
+     * @param  boolean $verbose 
+     * @param  $count   
+     * @return mixed          
+     */
+    public function listStreamKeys($keys = "*", $verbose = false, $count = null)
+    {
+        $params = $this->evaluateNullField(array($keys, $verbose),$count);
+        return $this->jsonRPCClient->execute("liststreamkeys", $params);
+    }
+
+    /**
+     * Lists items in stream, passed as a stream name, ref or creation txid. 
+     * Set verbose to true for additional information about each item’s transaction.
+     * @param  boolean $verbose 
+     * @param  integer $count   
+     * @return mixed       
+     */
+    public function listStreamItems($verbose = false, $count = 10)
+    {
+        return $this->jsonRPCClient->execute("liststreamitems", array("stream",$verbose,$count));
+    }
 }
