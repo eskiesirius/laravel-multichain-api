@@ -1004,14 +1004,15 @@ class MultichainClient
      * Provides information about keys in stream, passed as a stream name, ref or creation txid. 
      * Pass a single key in keys to retrieve information about one key only, pass an array for multiple keys, 
      * or * for all keys. Set verbose to true to include information about the first and last item with each key shown.
+     * @param  string  $streamName
      * @param  string  $keys    
      * @param  boolean $verbose 
      * @param  $count   
      * @return mixed          
      */
-    public function listStreamKeys($keys = "*", $verbose = false, $count = null)
+    public function listStreamKeys($streamName, $keys = "*", $verbose = false, $count = null)
     {
-        $params = $this->evaluateNullField(array($keys, $verbose),$count);
+        $params = $this->evaluateNullField(array($streamName, $keys, $verbose),$count);
         return $this->jsonRPCClient->execute("liststreamkeys", $params);
     }
 
