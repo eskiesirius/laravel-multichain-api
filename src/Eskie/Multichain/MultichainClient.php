@@ -979,25 +979,27 @@ class MultichainClient
      * to which the node must be subscribed. Set verbose to true for additional information about 
      * the item’s transaction. If an item’s data is larger than the maxshowndata runtime parameter, 
      * it will be returned as an object whose fields can be used with gettxoutdata.
+     * @param  string  $streamName
      * @param  $txId    
      * @param  boolean $verbose 
      * @return mixed        
      */
-    public function getStreamItem($txId, $verbose = false)
+    public function getStreamItem($streamName,$txId, $verbose = false)
     {
-        return $this->jsonRPCClient->execute("getstreamitem", array("stream",$txId,$verbose));
+        return $this->jsonRPCClient->execute("getstreamitem", array($streamName,$txId,$verbose));
     }
 
     /**
      * This works like liststreamitems, but listing items with the given key only.
+     * @param  string  $streamName
      * @param  $key     
      * @param  boolean $verbose 
      * @param  integer $count   
      * @return mixed        
      */
-    public function listStreamKeyItems($key,$verbose = false,$count = 10)
+    public function listStreamKeyItems($streamName,$key,$verbose = false,$count = 10)
     {
-        return $this->jsonRPCClient->execute("liststreamkeyitems", array("stream",$key,$verbose,$count));
+        return $this->jsonRPCClient->execute("liststreamkeyitems", array($streamName,$key,$verbose,$count));
     }
 
     /**
@@ -1019,12 +1021,13 @@ class MultichainClient
     /**
      * Lists items in stream, passed as a stream name, ref or creation txid. 
      * Set verbose to true for additional information about each item’s transaction.
+     * @param  string  $streamName
      * @param  boolean $verbose 
      * @param  integer $count   
      * @return mixed       
      */
-    public function listStreamItems($verbose = false, $count = 10)
+    public function listStreamItems($streamName, $verbose = false, $count = 10)
     {
-        return $this->jsonRPCClient->execute("liststreamitems", array("stream",$verbose,$count));
+        return $this->jsonRPCClient->execute("liststreamitems", array($streamName,$verbose,$count));
     }
 }
