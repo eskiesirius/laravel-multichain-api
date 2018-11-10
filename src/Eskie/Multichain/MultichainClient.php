@@ -1091,6 +1091,29 @@ class MultichainClient
     }
 
     /**
+     *  Creates a backup of the wallet.dat file in which the node’s private keys and watch-only addresses are stored. 
+     *  The backup is created in file filename. Use with caution – any node with access to this file can 
+     *  perform any action restricted to this node’s addresses.
+     * @param  $filename 
+     * @return mixed          
+     */
+    public function backupWallet($filename)
+    {
+        return $this->jsonRPCClient->execute("backupwallet", array($filename));
+    }
+
+    /**
+     * Dumps the entire set of private keys in the wallet into a human-readable text format in file filename. 
+     * Use with caution – any node with access to this file can perform any action restricted to this node’s addresses.
+     * @param  $filename 
+     * @return mixed          
+     */
+    public function dumpWallet($filename)
+    {
+        return $this->jsonRPCClient->execute("dumpwallet", array($filename));
+    }
+
+    /**
      * This encrypts the node’s wallet for the first time, using passphrase as the password for unlocking. 
      * Once encryption is complete, the wallet’s private keys can no longer be retrieved directly from the 
      * wallet.dat file on disk, and MultiChain will stop and need to be restarted. 
@@ -1115,6 +1138,18 @@ class MultichainClient
     public function getWalletInfo()
     {
         return $this->jsonRPCClient->execute("getwalletinfo");
+    }
+
+    /**
+     * Imports the entire set of private keys which were previously dumped (using dumpwallet) into file filename 
+     * into the wallet, together with their associated public addresses.
+     * @param  $filename 
+     * @param  integer $rescan   
+     * @return mixed          
+     */
+    public function importWallet($filename, $rescan = 0)
+    {
+        return $this->jsonRPCClient->execute("importwallet",array($filename,$rescan));
     }
 
     /**
