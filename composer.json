@@ -28,7 +28,7 @@
                 "Eskie\\Multichain\\MultiChainServiceProvider"
             ],
             "aliases":{
-                "Multichain":"Eskie\\Multichain\\Facades\\MultiChain"
+                "MultiChain":"Eskie\\Multichain\\Facades\\MultiChain"
             }
         }
     }
