@@ -945,7 +945,7 @@ class MultichainClient
      * @param  int  $count      
      * @return mixed              
      */
-    public function liststreams($streamName = "*", $verbose = false, $count = null)
+    public function listStreams($streamName = "*", $verbose = false, $count = null)
     {
         $params = $this->evaluateNullField(array($streamName, $verbose),$count);
         return $this->jsonRPCClient->execute("liststreams", $params);
